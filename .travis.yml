@@ -27,7 +27,7 @@ before_script:
 - mysql -e 'create database zombie2x;'
 - curl https://72c9192a7b87de5fc63a-f9fe2e6be12470a7bff22b7693bc7329.ssl.cf1.rackcdn.com/lamu-ci-zombie2x.sql
   | mysql zombie2x
-- php -S localhost:8000 httpdocs/index.php &
+- php -S ushahidi.dev httpdocs/index.php &
 - sleep 3
 script:
 - ./bin/phpspec run --format dot
