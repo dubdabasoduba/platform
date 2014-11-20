@@ -133,9 +133,9 @@ $di->params['Ushahidi\Factory\FormatterFactory']['collections'] = [
 $di->set('factory.usecase', $di->lazyNew('Ushahidi\Factory\UsecaseFactory'));
 $di->params['Ushahidi\Api\Factory\UsecaseFactory'] = [
 	'authorizers'  => $di->lazyGet('factory.authorizer'),
-	'parsers'      => $di->lazyGet('factory.parser'),
-	'validators'   => $di->lazyGet('factory.validator'),
 	'repositories' => $di->lazyGet('factory.repository'),
+	'formatters'   => $di->lazyGet('factory.formatters'),
+	'validators'   => $di->lazyGet('factory.validators'),
 ];
 
 // Each of the actions follows a standard sequence of events and is simply constructed
@@ -177,19 +177,6 @@ $di->params['Ushahidi\Factory\UsecaseFactory']['map']['posts'] = [
 	'read'    => $di->lazyNew('Ushahidi\Core\Usecase\Post\ReadPost'),
 	'update'  => $di->lazyNew('Ushahidi\Core\Usecase\Post\UpdatePost'),
 	'delete'  => $di->lazyNew('Ushahidi\Core\Usecase\Post\DeletePost'),
-];
-
-// Usecases also have slightly different interaction styles if they read, write,
-// or both. Additional actions should be defined here based on their style.
-$di->params['Ushahidi\Factory\UsecaseFactory']['read'] = [
-	'read'   => true,
-	'update' => true, // + write
-	'delete' => true,
-	'search' => true,
-];
-$di->params['Ushahidi\Factory\UsecaseFactory']['write'] = [
-	'create' => true,
-	'update' => true, // + read
 ];
 
 // Endpoints are used to cross the boundary between the core application and the
