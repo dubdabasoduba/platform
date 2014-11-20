@@ -13,6 +13,9 @@
 
 namespace Ushahidi\Core\Tool;
 
+use Ushahidi\Core\Entity;
+use Ushahidi\Core\Exception\ValidatorException;
+
 trait ValidatorTrait
 {
 	/**
@@ -28,5 +31,22 @@ trait ValidatorTrait
 	{
 		$this->valid = $valid;
 		return $this;
+	}
+
+	/**
+	 * Verify that the given entity is valid.
+	 *
+	 * @param  Entity $entity
+	 * @return void
+	 * @throws ValidatorException
+	 */
+	protected function verifyValid(Entity $entity)
+	{
+		if (!$this->valid->check($entity)) {
+			throw new ValidatorException(sprintf(
+				'Failed to validate %s entity',
+				$entity->getResource()
+			), $this->valid->errors());
+		}
 	}
 }

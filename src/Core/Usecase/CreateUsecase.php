@@ -62,7 +62,7 @@ class CreateUsecase implements Usecase
 		$this->verifyCreateAuth($entity);
 
 		// ... verify that the entity is in a valid state
-		$this->valid->verifyValid($entity);
+		$this->verifyValid($entity);
 
 		// ... persist the new entity
 		$id = $this->repo->create($entity);
