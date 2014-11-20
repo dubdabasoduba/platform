@@ -69,7 +69,7 @@ class UpdateUsecase implements Usecase
 		$this->verifyUpdateAuth($entity);
 
 		// ... verify that the entity is in a valid state
-		$this->valid->verifyValid($entity);
+		$this->verifyValid($entity);
 
 		// ... persist the changes
 		$this->repo->update($entity);
