@@ -11,63 +11,72 @@
 
 namespace Ushahidi\Core\Usecase;
 
-use Ushahidi\Core\Data;
 use Ushahidi\Core\Usecase;
-use Ushahidi\Core\ReadData;
 use Ushahidi\Core\Tool\AuthorizerTrait;
+use Ushahidi\Core\Tool\FormatterTrait;
+use Ushahidi\Core\Traits\IdentifyRecords;
 use Ushahidi\Core\Traits\VerifyEntityLoaded;
-
-use Ushahidi\Core\Exception\AuthorizerException;
 
 class ReadUsecase implements Usecase
 {
 	// Uses several traits to assign tools. Each of these traits provides a
 	// setter method for the tool. For example, the AuthorizerTrait provides
 	// a `setAuthorizer` method which only accepts `Authorizer` instances.
-	use AuthorizerTrait;
+	use AuthorizerTrait,
+		FormatterTrait;
+
+	// - IdentifyRecords for setting entity lookup parameters
+	use IdentifyRecords;
 
 	// - VerifyEntityLoaded for checking that an entity is found
 	use VerifyEntityLoaded;
 
-	// Ushahidi\Core\Usecase\ReadRepository
+	/**
+	 * @var ReadRepository
+	 */
 	protected $repo;
 
-	public function __construct(Array $tools)
-	{
-		$this->setRepository($tools['repo']);
-		$this->setAuthorizer($tools['auth']);
-	}
-
-	protected function setRepository(ReadRepository $repo)
+	/**
+	 * Inject a repository that can read entities.
+	 *
+	 * @param  $repo ReadRepository
+	 * @return $this
+	 */
+	public function setRepository(ReadRepository $repo)
 	{
 		$this->repo = $repo;
+		return $this;
 	}
 
-	public function interact(Data $input)
+	// Usecase
+	public function isWrite()
 	{
-		$entity = $this->getEntity($input);
+		return false;
+	}
 
-		$this->verifyEntityLoaded($entity, $input->id);
+	// Usecase
+	public function interact()
+	{
+		// Fetch the entity, using provided identifiers...
+		$entity = $this->getEntity();
 
-		if (!$this->auth->isAllowed($entity, 'read')) {
-			throw new AuthorizerException(sprintf(
-				'User %d is not allowed to view resource %s: %d',
-				$this->auth->getUserId(),
-				$entity->getResource(),
-				$entity->id
-			));
-		}
+		// ... verify that the entity was actually loaded
+		$this->verifyEntityLoaded($entity, $this->identifiers);
 
-		return $entity;
+		// ... verify that the entity can be read by the current user
+		$this->verifyReadAuth($entity);
+
+		// ... and return the formatted result.
+		return $this->formatter->__invoke($entity);
 	}
 
 	/**
-	 * Find entity based on read data
-	 * @param  Data    $input
+	 * Find entity based on identifying parameters.
+	 *
 	 * @return Entity
 	 */
-	protected function getEntity(Data $input)
+	protected function getEntity()
 	{
-		return $this->repo->get($input->id);
+		return $this->repo->get($this->getIdentifier('id'));
 	}
 }
