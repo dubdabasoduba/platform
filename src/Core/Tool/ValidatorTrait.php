@@ -16,16 +16,17 @@ namespace Ushahidi\Core\Tool;
 trait ValidatorTrait
 {
 	/**
-	 * @var Ushahidi\Core\Tool\Validator
+	 * @var Validator
 	 */
 	protected $valid;
 
 	/**
-	 * @param  Ushahidi\Core\Tool\Validator $valid
+	 * @param  Validator $valid
 	 * @return void
 	 */
-	protected function setValidator(Validator $valid)
+	public function setValidator(Validator $valid)
 	{
 		$this->valid = $valid;
+		return $this;
 	}
 }
