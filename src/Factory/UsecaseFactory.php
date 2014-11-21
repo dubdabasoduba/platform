@@ -113,7 +113,7 @@ class UsecaseFactory
 		}
 
 		if ($usecase->isSearch()) {
-			$usecase->setSearchData($this->data->get($action));
+			$usecase->setData($this->data->get($action));
 		}
 
 		return $usecase;
