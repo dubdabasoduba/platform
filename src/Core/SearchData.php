@@ -34,9 +34,11 @@ class SearchData
 	 *
 	 * @param  Array $filters
 	 */
-	public function __construct(Array $filters)
+	public function __construct(Array $filters = null)
 	{
-		$this->setFilters($filters);
+		if ($filters) {
+			$this->setFilters($filters);
+		}
 	}
 
 	/**
