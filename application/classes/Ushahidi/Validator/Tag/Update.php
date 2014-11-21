@@ -9,10 +9,9 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-use Ushahidi\Core\Data;
-use Ushahidi\Core\Usecase\Tag\UpdateTagRepository;
+use Ushahidi\Core\Entity;
 use Ushahidi\Core\Entity\RoleRepository;
-
+use Ushahidi\Core\Usecase\Tag\UpdateTagRepository;
 use Ushahidi\Core\Tool\Validator;
 
 class Ushahidi_Validator_Tag_Update implements Validator
@@ -27,9 +26,10 @@ class Ushahidi_Validator_Tag_Update implements Validator
 		$this->role = $role;
 	}
 
-	public function check(Data $input)
+	public function check(Entity $entity)
 	{
-		$this->valid = Validation::factory($input->asArray())
+		$this->valid = Validation::factory($entity->asArray())
+			->bind(':id', $entity->id)
 			->rules('tag', array(
 					array('min_length', array(':value', 2)),
 					// alphas, numbers, punctuation, and spaces
@@ -41,7 +41,7 @@ class Ushahidi_Validator_Tag_Update implements Validator
 			->rules('slug', array(
 					array('min_length', array(':value', 2)),
 					array('alpha_dash'),
-					array([$this->repo, 'isSlugAvailable'], array(':value')),
+					array([$this->repo, 'isSlugAvailable'], array(':id', ':value')),
 				))
 			->rules('description', array(
 					// alphas, numbers, punctuation, and spaces
