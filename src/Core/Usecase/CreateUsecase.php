@@ -53,6 +53,12 @@ class CreateUsecase implements Usecase
 	}
 
 	// Usecase
+	public function isSearch()
+	{
+		return false;
+	}
+
+	// Usecase
 	public function interact()
 	{
 		// Fetch and hydrate the entity...

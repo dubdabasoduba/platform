@@ -21,6 +21,13 @@ interface Usecase
 	public function isWrite();
 
 	/**
+	 * Will this usecase search for data?
+	 *
+	 * @return Boolean
+	 */
+	public function isSearch();
+
+	/**
 	 * Given user input, return a formatted Entity as the result.
 	 *
 	 * Interaction will typically consist of one or more of the following:

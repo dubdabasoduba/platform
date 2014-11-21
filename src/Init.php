@@ -129,6 +129,14 @@ $di->params['Ushahidi\Factory\FormatterFactory']['collections'] = [
 	'search' => true,
 ];
 
+// Data transfer objects are used to carry complex search filters between collaborators.
+$di->set('factory.data', $di->lazyNew('Ushahidi\Factory\DataFactory'));
+
+// Usecases that perform searches are the most typical usage of data objects.
+$di->params['Ushahidi\Factory\DataFactory']['actions'] = [
+	'search' => $di->lazyNew('Ushahidi\Core\SearchData'),
+];
+
 // Use cases are used to join multiple collaborators together for a single interaction.
 $di->set('factory.usecase', $di->lazyNew('Ushahidi\Factory\UsecaseFactory'));
 $di->params['Ushahidi\Api\Factory\UsecaseFactory'] = [
@@ -136,6 +144,7 @@ $di->params['Ushahidi\Api\Factory\UsecaseFactory'] = [
 	'repositories' => $di->lazyGet('factory.repository'),
 	'formatters'   => $di->lazyGet('factory.formatters'),
 	'validators'   => $di->lazyGet('factory.validators'),
+	'data'         => $di->lazyGet('factory.data'),
 ];
 
 // Each of the actions follows a standard sequence of events and is simply constructed

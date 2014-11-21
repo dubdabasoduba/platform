@@ -55,6 +55,12 @@ class DeleteUsecase implements Usecase
 	}
 
 	// Usecase
+	public function isSearch()
+	{
+		return false;
+	}
+
+	// Usecase
 	public function interact()
 	{
 		// Fetch the entity, using provided identifiers...

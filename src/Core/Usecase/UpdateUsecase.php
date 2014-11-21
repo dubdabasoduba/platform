@@ -60,6 +60,12 @@ class UpdateUsecase implements Usecase
 	}
 
 	// Usecase
+	public function isSearch()
+	{
+		return false;
+	}
+
+	// Usecase
 	public function interact()
 	{
 		// Fetch the entity with payload applied...
