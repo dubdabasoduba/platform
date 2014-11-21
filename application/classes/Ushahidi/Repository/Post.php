@@ -63,11 +63,11 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 
 		// Get custom form attribute values
 		$values = $this->post_value_factory->proxy()->getAllForPost($data['id']);
-		$post->setState(['values' => $values]);
+		$post->setData(['values' => $values]);
 
 		// Get tags
 		$tags = $this->getTagsForPost($data['id']);
-		$post->setState(['tags' => $tags]);
+		$post->setData(['tags' => $tags]);
 
 		return $post;
 	}

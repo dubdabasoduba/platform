@@ -9,22 +9,14 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-use Ushahidi\Core\Data;
+use Ushahidi\Core\Entity;
 use Ushahidi\Core\SearchData;
 use Ushahidi\Core\Entity\Tag;
-use Ushahidi\Core\Usecase\CreateRepository;
-use Ushahidi\Core\Usecase\ReadRepository;
-use Ushahidi\Core\Usecase\DeleteRepository;
-use Ushahidi\Core\Usecase\SearchRepository;
 use Ushahidi\Core\Usecase\Tag\UpdateTagRepository;
 use Ushahidi\Core\Usecase\Tag\DeleteTagRepository;
 use Ushahidi\Core\Usecase\Post\UpdatePostTagRepository;
 
 class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
-	CreateRepository,
-	ReadRepository,
-	DeleteRepository,
-	SearchRepository,
 	UpdateTagRepository,
 	DeleteTagRepository,
 	UpdatePostTagRepository
@@ -44,9 +36,6 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 	// ReadRepository
 	public function getEntity(Array $data = null)
 	{
-		if ($data['role'] && is_string($data['role'])) {
-			$data['role'] = json_decode($data['role']);
-		}
 		return new Tag($data);
 	}
 
@@ -55,14 +44,11 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 	{
 		$query = $this->search_query;
 
-		if ($search->tag) {
-			$query->where('tag', '=', $search->tag);
-		}
-		if ($search->type) {
-			$query->where('type', '=', $search->type);
-		}
-		if ($search->parent) {
-			$query->where('parent_id', '=', $search->parent);
+		foreach (['tag', 'type', 'parent_id'] as $key)
+		{
+			if ($search->$key) {
+				$query->where($key, '=', $search->$key);
+			}
 		}
 
 		if ($search->q) {
@@ -72,30 +58,9 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 	}
 
 	// CreateRepository
-	public function create(Data $data)
+	public function create(Entity $entity)
 	{
-		$record = array_filter($data->asArray());
-		$record['created'] = time();
-
-		if ($data->role) {
-			$record['role'] = json_encode($record['role']);
-		}
-
-		return $this->executeInsert($record);
-	}
-
-	// UpdateRepository
-	public function update($id, Data $input)
-	{
-		$record = $input->asArray();
-
-		// Convert roles array to JSON. Using array_key_exists is necessary,
-		// to prevent errors when removing all role restrictions from a tag.
-		if (array_key_exists('role', $record)) {
-			$record['role'] = json_encode($record['role']);
-		}
-
-		return $this->executeUpdate(compact('id'), $record);
+		return parent::create($entity->setState(['created' => time()]));
 	}
 
 	// UpdatePostTagRepository
@@ -117,9 +82,15 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 	}
 
 	// UpdateTagRepository
-	public function isSlugAvailable($slug)
+	public function isSlugAvailable($id, $slug)
 	{
-		return $this->selectCount(compact('slug')) === 0;
+		$query = $this->selectQuery()
+			->select([DB::expr('COUNT(*)'), 'total'])
+			->where('id', '!=', $id)
+			->where('slug', '=', $slug)
+			->execute($this->db);
+
+		return $query->get('total') < 1;
 	}
 
 	// DeleteTagRepository
