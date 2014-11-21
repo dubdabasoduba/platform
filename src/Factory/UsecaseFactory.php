@@ -72,6 +72,7 @@ class UsecaseFactory
 		Array $map
 	) {
 		$this->authorizers  = $authorizers;
+		$this->data         = $data;
 		$this->formatters   = $formatters;
 		$this->repositories = $repositories;
 		$this->validators   = $validators;
