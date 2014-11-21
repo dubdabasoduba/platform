@@ -43,7 +43,7 @@ class Ushahidi_Validator_Message_Update implements Validator
 
 	public function check(Data $input)
 	{
-		$this->valid = Validation::factory($input->asArray())
+		$this->valid = Validation::factory($input->getChanged())
 			->rules('status', [
 				[[$this->repo, 'checkStatus'], [':value', $this->getDirection()]],
 			]);

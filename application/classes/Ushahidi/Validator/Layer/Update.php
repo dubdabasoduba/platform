@@ -27,7 +27,7 @@ class Ushahidi_Validator_Layer_Update implements Validator
 
 	public function check(Data $input)
 	{
-		$this->valid = Validation::factory($input->asArray())
+		$this->valid = Validation::factory($input->getChanged())
 			->rules('name', array(
 					array('min_length', array(':value', 2)),
 					array('max_length', array(':value', 50)),

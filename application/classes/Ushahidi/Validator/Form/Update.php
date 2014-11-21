@@ -18,7 +18,7 @@ class Ushahidi_Validator_Form_Update implements Validator
 
 	public function check(Entity $entity)
 	{
-		$this->valid = Validation::factory($entity->asArray())
+		$this->valid = Validation::factory($entity->getChanged())
 			->rules('name', [
 				['min_length', [':value', 2]],
 				['regex', [':value', Validator::REGEX_STANDARD_TEXT]], // alpha, number, punctuation, space

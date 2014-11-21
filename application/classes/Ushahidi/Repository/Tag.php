@@ -82,15 +82,9 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 	}
 
 	// UpdateTagRepository
-	public function isSlugAvailable($id, $slug)
+	public function isSlugAvailable($slug)
 	{
-		$query = $this->selectQuery()
-			->select([DB::expr('COUNT(*)'), 'total'])
-			->where('id', '!=', $id)
-			->where('slug', '=', $slug)
-			->execute($this->db);
-
-		return $query->get('total') < 1;
+		return $this->selectCount(compact('slug')) === 0;
 	}
 
 	// DeleteTagRepository

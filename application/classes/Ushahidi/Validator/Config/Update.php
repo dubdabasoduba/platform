@@ -18,7 +18,7 @@ class Ushahidi_Validator_Config_Update implements Validator
 
 	public function check(Entity $entity)
 	{
-		$data = $entity->asArray();
+		$data = $entity->getChanged();
 		$keys = array_keys($data);
 
 		$this->valid = Validation::factory($data);

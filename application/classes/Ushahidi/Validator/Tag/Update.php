@@ -28,7 +28,7 @@ class Ushahidi_Validator_Tag_Update implements Validator
 
 	public function check(Entity $entity)
 	{
-		$this->valid = Validation::factory($entity->asArray())
+		$this->valid = Validation::factory($entity->getChanged())
 			->bind(':id', $entity->id)
 			->rules('tag', array(
 					array('min_length', array(':value', 2)),
@@ -41,7 +41,7 @@ class Ushahidi_Validator_Tag_Update implements Validator
 			->rules('slug', array(
 					array('min_length', array(':value', 2)),
 					array('alpha_dash'),
-					array([$this->repo, 'isSlugAvailable'], array(':id', ':value')),
+					array([$this->repo, 'isSlugAvailable'], array(':value')),
 				))
 			->rules('description', array(
 					// alphas, numbers, punctuation, and spaces
