@@ -29,6 +29,19 @@ class SearchUsecase implements Usecase
 	use FilterRecords;
 
 	/**
+	 * @var SearchData
+	 */
+	protected $search;
+
+	/**
+	 * @param SearchData $search
+	 */
+	public function setData(SearchData $search)
+	{
+		$this->search = $search;
+	}
+
+	/**
 	 * @var SearchRepository
 	 */
 	protected $repo;
@@ -49,6 +62,12 @@ class SearchUsecase implements Usecase
 	public function isWrite()
 	{
 		return false;
+	}
+
+	// Usecase
+	public function isSearch()
+	{
+		return true;
 	}
 
 	// Usecase
@@ -115,9 +134,12 @@ class SearchUsecase implements Usecase
 		$paging  = $this->getPagingFields();
 		$allowed = array_merge($allowed, $paging);
 
-		// @todo does this need to be injected? being fully dynamic, why?
-		return (new SearchData($this->getFilters($allowed)))
-			->setSorting($paging);
+		$filters = $this->getFilters($allowed);
+
+		$this->search->setFilters($filters);
+		$this->search->setSorting($paging);
+
+		return $this->search;
 	}
 
 	public function getSearchTotal()
