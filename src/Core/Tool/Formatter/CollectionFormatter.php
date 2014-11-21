@@ -14,7 +14,6 @@
 namespace Ushahidi\Core\Tool\Formatter;
 
 use Ushahidi\Core\SearchData;
-use Ushahidi\Core\Entity;
 use Ushahidi\Core\Tool\Formatter;
 use Ushahidi\Core\Exception\FormatterException;
 
@@ -22,9 +21,31 @@ abstract class CollectionFormatter implements Formatter
 {
 	protected $formatter;
 
+	/**
+	 * @var SearchData
+	 */
+	protected $search;
+
+	/**
+	 * Collection formatter recursively invokes an entity-specific formatter.
+	 *
+	 * @param  Formatter $formatter
+	 */
 	public function __construct(Formatter $formatter)
 	{
 		$this->formatter = $formatter;
+	}
+
+	/**
+	 * Store paging parameters.
+	 *
+	 * @param  Array $paging
+	 * @return $this
+	 */
+	public function setSearch(SearchData $search)
+	{
+		$this->search = $search;
+		return $this;
 	}
 
 	// Formatter
@@ -39,18 +60,23 @@ abstract class CollectionFormatter implements Formatter
 			$results[] = $this->formatter->__invoke($entity);
 		}
 
-		return [
+		$output = [
 			'count'   => count($results),
 			'results' => $results,
 		];
+
+		if ($this->search) {
+			$output += $this->getPaging();
+		}
+
+		return $output;
 	}
 
 	/**
-	 * Collections are always paged, which requires paging metadata to be added
+	 * Collections are always paged, which requires pages metadata to be added
 	 * to the results.
-	 * @param  SearchData $input
-	 * @param  Int        $total_count
+	 *
 	 * @return Array
 	 */
-	abstract public function getPaging(SearchData $input, $total_count);
+	abstract public function getPaging();
 }
