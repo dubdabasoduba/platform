@@ -80,7 +80,7 @@ class SearchUsecase implements Usecase
 		$this->verifySearchAuth($entity);
 
 		// ... and get the search filters for this entity
-		$search = $this->getSearch($entity->getSearchFields());
+		$search = $this->getSearch();
 
 		// ... pass the search information to the repo
 		$this->repo->setSearchParams($search);
@@ -126,15 +126,14 @@ class SearchUsecase implements Usecase
 	/**
 	 * Get filter parameters as search data.
 	 *
-	 * @param  Array $allowed
 	 * @return SearchData
 	 */
-	protected function getSearch(Array $allowed)
+	protected function getSearch()
 	{
-		$paging  = $this->getPagingFields();
-		$allowed = array_merge($allowed, $paging);
+		$fields = $this->repo->getSearchFields();
+		$paging = $this->getPagingFields();
 
-		$filters = $this->getFilters($allowed);
+		$filters = $this->getFilters(array_merge($fields, $paging));
 
 		$this->search->setFilters($filters);
 		$this->search->setSorting($paging);

@@ -23,6 +23,12 @@ interface SearchRepository
 	public function getEntity(Array $data = null);
 
 	/**
+	 * Get fields that can be used for searches.
+	 * @return Array
+	 */
+	public function getSearchFields();
+
+	/**
 	 * @param  SearchData $search
 	 * @return $this
 	 */

@@ -62,7 +62,7 @@ class SearchUsecaseSpec extends ObjectBehavior
 		$auth->isAllowed($entity, $action)->willReturn(true);
 
 		// ... it searches for records
-		$entity->getSearchFields()->willReturn([]);
+		$repo->getSearchFields()->willReturn([]);
 		$repo->setSearchParams($search)->shouldBeCalled();
 
 		// ... and gets the results
