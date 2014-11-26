@@ -68,13 +68,13 @@ abstract class Ushahidi_Repository implements
 	// CreateRepository
 	public function create(Entity $entity)
 	{
-		return $this->executeInsert($this->removeNullValues($entity->getSerialized()));
+		return $this->executeInsert($this->removeNullValues($entity->asArray()));
 	}
 
 	// UpdateRepository
 	public function update(Entity $entity)
 	{
-		return $this->executeUpdate(['id' => $entity->id], $entity->getSerialized(true));
+		return $this->executeUpdate(['id' => $entity->id], $entity->getChanged());
 	}
 
 	// DeleteRepository
