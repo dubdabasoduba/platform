@@ -29,7 +29,7 @@ trait VerifyEntityLoaded
 	 * @return void
 	 * @throws NotFoundException
 	 */
-	private function verifyEntityLoaded(Entity $entity, $lookup)
+	protected function verifyEntityLoaded(Entity $entity, $lookup)
 	{
 		if (!$entity->getId()) {
 			if (is_array($lookup)) {
