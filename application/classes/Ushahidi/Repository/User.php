@@ -60,7 +60,7 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 		return parent::create($entity->setState($state));
 	}
 
-	// UpdateRepository 
+	// UpdateRepository
 	public function update(Entity $entity)
 	{
 		$state = [
@@ -72,6 +72,12 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 		}
 
 		return parent::update($entity->setState($state));
+	}
+
+	// SearchRepository
+	public function getSearchFields()
+	{
+		return ['username', 'email', 'q' /* LIKE realname, username */];
 	}
 
 	// SearchRepository

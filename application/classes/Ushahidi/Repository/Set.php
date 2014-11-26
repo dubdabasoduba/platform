@@ -37,6 +37,12 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository
 		return parent::update($entity->setState(['updated' => time()]));
 	}
 
+	// SearchRepository
+	public function getSearchFields()
+	{
+		return ['user_id', 'q' /* LIKE name */];
+	}
+
 	// Ushahidi_Repository
 	protected function setSearchConditions(SearchData $search)
 	{

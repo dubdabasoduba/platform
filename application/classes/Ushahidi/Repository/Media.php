@@ -45,6 +45,12 @@ class Ushahidi_Repository_Media extends Ushahidi_Repository implements
 		return new Media($data);
 	}
 
+	// SearchRepository
+	public function getSearchFields()
+	{
+		return ['user', 'orphans'];
+	}
+
 	// Ushahidi_Repository
 	protected function setSearchConditions(SearchData $search)
 	{

@@ -69,6 +69,12 @@ class Ushahidi_Repository_Dataprovider implements
 	}
 
 	// SearchRepository
+	public function getSearchFields()
+	{
+		return ['type'];
+	}
+
+	// SearchRepository
 	public function setSearchParams(SearchData $search)
 	{
 		$this->search_params = $search;

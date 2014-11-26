@@ -39,6 +39,12 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 		return new Tag($data);
 	}
 
+	// SearchRepository
+	public function getSearchFields()
+	{
+		return ['tag', 'type', 'parent_id', 'q', /* LIKE tag */];
+	}
+
 	// Ushahidi_Repository
 	protected function setSearchConditions(SearchData $search)
 	{

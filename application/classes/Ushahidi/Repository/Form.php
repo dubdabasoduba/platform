@@ -30,6 +30,12 @@ class Ushahidi_Repository_Form extends Ushahidi_Repository implements
 		return new Form($data);
 	}
 
+	// SearchRepository
+	public function getSearchFields()
+	{
+		return ['parent', 'q' /* LIKE name */];
+	}
+
 	// Ushahidi_Repository
 	protected function setSearchConditions(SearchData $search)
 	{
