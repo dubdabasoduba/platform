@@ -171,9 +171,10 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 */
 	public function action_get_index()
 	{
-		$endpoint = service('factory.endpoint')->get('posts', 'read');
+		$usecase = service('factory.usecase')->get('posts', 'read')
+			->setIdentifiers($this->request->param());
 
-		$this->_restful($endpoint, $this->request->param());
+		$this->_restful($usecase);
 	}
 
 	/**

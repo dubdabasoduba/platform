@@ -17,20 +17,23 @@ use Ushahidi\Core\Entity\PostRepository;
 trait FindPostEntity
 {
 	/**
-	 * Find post entity based on read data
-	 * @param  Data    $input
+	 * Find post entity based on
 	 * @return Entity\Post
 	 */
-	protected function getEntity(Data $input)
+	protected function getEntity()
 	{
 		$this->verifyPostRepo($this->repo);
 
-		if ($input->parent_id && $input->locale) {
-			return $this->repo->getByLocale($input->locale, $input->parent_id);
+		$id     = $this->getIdentifier('id');
+		$parent = $this->getIdentifier('parent_id');
+		$locale = $this->getIdentifier('locale');
+
+		if ($parent && $locale) {
+			return $this->repo->getByLocale($locale, $parent);
 		} else {
 			// Load post by id and parent id, because if its a revision or update
 			// we should only return revision for the particular parent post
-			return $this->repo->getByIdAndParent($input->id, $input->parent_id);
+			return $this->repo->getByIdAndParent($id, $parent);
 		}
 	}
 
@@ -43,4 +46,7 @@ trait FindPostEntity
 	{
 		return true;
 	}
+
+	// IdentifyRecords
+	abstract protected function getIdentifier($name, $default = null);
 }
