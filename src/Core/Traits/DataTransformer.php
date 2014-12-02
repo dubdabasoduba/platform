@@ -56,7 +56,7 @@ trait DataTransformer
 		$value = preg_replace('/[^\pL\PN-]++/', ' ', $value);
 
 		// ... make it lowercase
-		$value = strtolower($value);
+		$value = mb_strtolower($value, 'utf-8');
 
 		// ... and replace spaces with hypens
 		return str_replace(' ', '-', $value);

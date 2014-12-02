@@ -29,8 +29,16 @@ class Post extends StaticEntity
 	protected $created;
 	protected $updated;
 	protected $locale;
-	protected $values = [];
-	protected $tags = [];
+	protected $values;
+	protected $tags;
+
+	// StatefulData
+	protected function getDerived()
+	{
+		return [
+			'slug' => 'title',
+		];
+	}
 
 	// DataTransformer
 	protected function getDefinition()
@@ -42,7 +50,7 @@ class Post extends StaticEntity
 			'user_id'         => 'int',
 			'type'            => 'string',
 			'title'           => 'string',
-			'slug'            => 'string',
+			'slug'            => '*slug',
 			'content'         => 'string',
 			'author_email'    => 'string', /* @todo email filter */
 			'author_realname' => 'string', /* @todo redundent with user record */

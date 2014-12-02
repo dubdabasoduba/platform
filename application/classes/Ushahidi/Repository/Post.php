@@ -337,11 +337,17 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		// Create the post
 		$id = $this->executeInsert($this->removeNullValues($post));
 
-		// Update post-tags
-		$this->updatePostTags($id, $entity->tags);
+		if ($entity->tags)
+		{
+			// Update post-tags
+			$this->updatePostTags($id, $entity->tags);
+		}
 
-		// Update post-values
-		$this->updatePostValues($id, $entity->values);
+		if ($entity->values)
+		{
+			// Update post-values
+			$this->updatePostValues($id, $entity->values);
+		}
 
 		return $id;
 	}
@@ -357,11 +363,17 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		// Update the post
 		$count = $this->executeUpdate(['id' => $entity->id], $post);
 
-		// Update post-tags
-		$this->updatePostTags($entity->id, $entity->tags);
+		if ($entity->tags)
+		{
+			// Update post-tags
+			$this->updatePostTags($entity->id, $entity->tags);
+		}
 
-		// Update post-values
-		$this->updatePostValues($entity->id, $entity->values);
+		if ($entity->values)
+		{
+			// Update post-values
+			$this->updatePostValues($entity->id, $entity->values);
+		}
 
 		// @todo Save revision
 		//$this->createRevision($id);
