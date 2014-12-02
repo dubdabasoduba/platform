@@ -36,7 +36,8 @@ class Post extends StaticEntity
 	protected function getDerived()
 	{
 		return [
-			'slug' => 'title',
+			'slug'    => 'title',
+			'form_id' => 'form', /* alias */
 		];
 	}
 

@@ -117,6 +117,9 @@ trait StatefulData
 			}
 		}
 
+		// Clear out any data that is not defined in this object.
+		$data = array_intersect_key($data, $this->asArray());
+
 		// To prevent polluting object properties, changes are tracked through a
 		// static property, indexed by the object id. This ensures that all object
 		// properties are associated directly with the entity, and that the change
