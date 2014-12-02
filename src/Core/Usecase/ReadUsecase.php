@@ -83,6 +83,6 @@ class ReadUsecase implements Usecase
 	 */
 	protected function getEntity()
 	{
-		return $this->repo->get($this->getIdentifier('id'));
+		return $this->repo->get($this->getRequiredIdentifier('id'));
 	}
 }
