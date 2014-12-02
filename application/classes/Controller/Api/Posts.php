@@ -147,8 +147,8 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	public function action_get_index_collection()
 	{
 		$extra_params = [
-			'type'      => $this->_type,
-			'parent_id' => $this->_parent_id,
+			'type'   => $this->_type,
+			'parent' => $this->_parent_id,
 		];
 
 		$usecase = service('factory.usecase')
