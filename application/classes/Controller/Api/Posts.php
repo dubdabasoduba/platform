@@ -186,20 +186,14 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 */
 	public function action_put_index()
 	{
-		$format = service('factory.formatter')->get('posts', 'update');
-		$read_parser = service('factory.parser')->get('posts', 'read');
-		$write_parser = service('factory.parser')->get('posts', 'update');
-		$usecase = service('factory.usecase')->get('posts', 'update');
-
-		$request = $this->_request_payload;
-
-		$read = $this->request->param();
+		$usecase = service('factory.usecase')
+			->get('posts', 'update')
+			->setIdentifiers($this->request->param())
+			->setPayload($this->_request_payload);
 
 		try
 		{
-			$write_data = $write_parser($this->_request_payload);
-			$read_data = $read_parser($read);
-			$post = $usecase->interact($read_data, $write_data);
+			$this->_response_payload = $usecase->interact();
 		}
 		catch (Ushahidi\Core\Exception\NotFoundException $e)
 		{
@@ -216,10 +210,6 @@ class Controller_Api_Posts extends Ushahidi_Api {
 		{
 			throw new HTTP_Exception_403($e->getMessage());
 		}
-
-		$this->_response_payload = $format($post);
-		$this->_response_payload['updated_fields'] = $usecase->getUpdated();
-		$this->_response_payload['allowed_methods'] = $this->_allowed_methods();
 	}
 
 	/**

@@ -358,10 +358,10 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		$count = $this->executeUpdate(['id' => $entity->id], $post);
 
 		// Update post-tags
-		$this->updatePostTags($id, $entity->tags);
+		$this->updatePostTags($entity->id, $entity->tags);
 
 		// Update post-values
-		$this->updatePostValues($id, $entity->values);
+		$this->updatePostValues($entity->id, $entity->values);
 
 		// @todo Save revision
 		//$this->createRevision($id);
