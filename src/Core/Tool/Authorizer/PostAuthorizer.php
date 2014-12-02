@@ -74,6 +74,11 @@ class PostAuthorizer implements Authorizer
 			return true;
 		}
 
+		// Generic access to allow search access to anyone
+		if ($privilege === 'search' && !$entity->getId()) {
+			return true;
+		}
+
 		// If a post is public then *anyone* can view it.
 		if ($privilege === 'read' && $this->isPostPublic($entity)) {
 			return true;

@@ -150,14 +150,16 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 */
 	public function action_get_index_collection()
 	{
-		$endpoint = service('factory.endpoint')->get('posts', 'search');
-
 		$extra_params = [
-			'type' => $this->_type,
-			'parent' => $this->request->param('parent_id', NULL)
+			'type'      => $this->_type,
+			'parent_id' => $this->_parent_id,
 		];
 
-		$this->_restful($endpoint, $extra_params +  $this->request->query());
+		$usecase = service('factory.usecase')
+			->get('posts', 'search')
+			->setFilters($extra_params + $this->request->query());
+
+		$this->_restful($usecase);
 	}
 
 	/**
@@ -228,7 +230,7 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 */
 	public function action_delete_index()
 	{
-		$endpoint = service('factory.endpoint')->get('posts', 'delete');
+		$endpoint = service('factory.usecase')->get('posts', 'delete');
 
 		$this->_restful($endpoint, $this->request->param());
 	}
@@ -239,15 +241,14 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 * @throws HTTP_Exception_400
 	 * @throws HTTP_Exception_403
 	 * @throws HTTP_Exception_404
-	 * @param  Ushahidi\Endpoint $endpoint
-	 * @param  Array $request
+	 * @param  Ushahidi\Endpoint $usecase
 	 * @return void
 	 */
-	protected function _restful(Endpoint $endpoint, Array $request)
+	protected function _restful(Usecase $usecase)
 	{
 		try
 		{
-			$this->_response_payload = $endpoint->run($request);
+			$this->_response_payload = $usecase->interact();
 		}
 		catch (Ushahidi\Core\Exception\NotFoundException $e)
 		{

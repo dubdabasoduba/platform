@@ -27,6 +27,12 @@ class Ushahidi_Repository_FormAttribute extends Ushahidi_Repository implements F
 		return new FormAttribute($data);
 	}
 
+	// Ushahidi_Repository
+	public function getSearchFields()
+	{
+		return [];
+	}
+
 	// FormAttributeRepository
 	public function getByKey($key, $form_id = null)
 	{

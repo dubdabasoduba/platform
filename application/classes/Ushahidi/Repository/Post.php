@@ -9,15 +9,16 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-use Ushahidi\Core\Data;
-use Ushahidi\Core\SearchData;
+use Ushahidi\Core\Entity;
+use Ushahidi\Core\Entity\FormAttributeRepository;
 use Ushahidi\Core\Entity\Post;
 use Ushahidi\Core\Entity\PostRepository;
-use Ushahidi\Core\Usecase\Post\UpdatePostRepository;
-use Ushahidi\Core\Entity\FormAttributeRepository;
-use Ushahidi\Core\Usecase\Post\UpdatePostTagRepository;
-use Ushahidi\Core\Entity\UserRepository;
 use Ushahidi\Core\Entity\PostSearchData;
+use Ushahidi\Core\Entity\UserRepository;
+use Ushahidi\Core\SearchData;
+use Ushahidi\Core\Usecase\Post\UpdatePostRepository;
+use Ushahidi\Core\Usecase\Post\UpdatePostTagRepository;
+
 use Aura\DI\InstanceFactory;
 
 class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostRepository, UpdatePostRepository
@@ -59,17 +60,26 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	// Ushahidi_Repository
 	public function getEntity(Array $data = null)
 	{
-		$post = new Post($data);
+		if (!empty($data['id'])) {
+			$data += [
+				// Get custom form attribute values and tags
+				'values' => $this->post_value_factory->proxy()->getAllForPost($data['id']),
+				'tags'   => $this->getTagsForPost($data['id']),
+			];
+		}
+		return new Post($data);
+	}
 
-		// Get custom form attribute values
-		$values = $this->post_value_factory->proxy()->getAllForPost($data['id']);
-		$post->setData(['values' => $values]);
-
-		// Get tags
-		$tags = $this->getTagsForPost($data['id']);
-		$post->setData(['tags' => $tags]);
-
-		return $post;
+	// Ushahidi_Repository
+	public function getSearchFields()
+	{
+		return [
+			'status', 'type', 'locale', 'slug', 'user',
+			'parent', 'form', 'set', 'q', /* LIKE title, content */
+			'created_before', 'created_after',
+			'updated_before', 'updated_after',
+			'bbox', 'tags', 'values',
+		];
 	}
 
 	// Ushahidi_Repository
@@ -77,30 +87,32 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	{
 		$query = $this->search_query;
 
-		if ($search->status) {
+		if (!$search->status)
+		{
+			// Only show published by default
+			$query->where('status', '=', 'published');
+		}
+		elseif ($search->status !== 'all')
+		{
 			$query->where('status', '=', $search->status);
 		}
-		if ($search->type)
+
+		$table = $this->getTable();
+
+		foreach (['type', 'locale', 'slug'] as $key)
 		{
-			$query->where('posts.type', '=', $search->type);
+			if ($search->$key)
+			{
+				$query->where("$table.$key", '=', $search->$key);
+			}
 		}
-		if ($search->locale) {
-			$query->where('locale', '=', $search->locale);
-		}
-		if ($search->slug) {
-			$query->where('slug', '=', $search->slug);
-		}
-		if ($search->user)
+
+		foreach (['user', 'parent', 'form'] as $key)
 		{
-			$query->where('user_id', '=', $search->user);
-		}
-		if ($search->parent)
-		{
-			$query->where('posts.parent_id', '=', $search->parent);
-		}
-		if ($search->form)
-		{
-			$query->where('form_id', '=', $search->form);
+			if ($search->$key)
+			{
+				$query->where("$table.{$key}_id", '=', $search->$key);
+			}
 		}
 
 		if ($search->q)
@@ -315,45 +327,41 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	}
 
 	// UpdateRepository
-	public function create(Data $input)
+	public function create(Entity $entity)
 	{
-		$input = $input->asArray();
-		$input['updated'] = time();
+		$post = $entity->setState(['created' => time()])->asArray();
 
-		// Update the post entry if it changed
-		$post_input = $input;
-		unset($post_input['values'], $post_input['tags']);
+		// Remove attribute values and tags
+		unset($post['values'], $post['tags']);
 
-		$id = $this->executeInsert($post_input);
+		// Create the post
+		$id = $this->executeInsert($this->removeNullValues($post));
 
 		// Update post-tags
-		$this->updatePostTags($id, $input['tags']);
+		$this->updatePostTags($id, $entity->tags);
 
 		// Update post-values
-		$this->updatePostValues($id, $input['values']);
+		$this->updatePostValues($id, $entity->values);
 
 		return $id;
 	}
 
 	// UpdateRepository
-	public function update($id, Data $input)
+	public function update(Entity $entity)
 	{
-		$update = $input->asArray();
-		$update['updated'] = time();
+		$post = $entity->setState(['updated' => time()])->getChanged();
 
-		// Update the post entry if it changed
-		$post_update = $update;
-		unset($post_update['values'], $post_update['tags']);
-		if ($post_update)
-		{
-			$count = $this->executeUpdate(compact('id'), $post_update);
-		}
+		// Remove attribute values and tags
+		unset($post['values'], $post['tags']);
+
+		// Update the post
+		$count = $this->executeUpdate(['id' => $entity->id], $post);
 
 		// Update post-tags
-		$this->updatePostTags($id, $update['tags']);
+		$this->updatePostTags($id, $entity->tags);
 
 		// Update post-values
-		$this->updatePostValues($id, $update['values']);
+		$this->updatePostValues($id, $entity->values);
 
 		// @todo Save revision
 		//$this->createRevision($id);
@@ -442,5 +450,4 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 				->execute($this->db);
 		}
 	}
-
 }
