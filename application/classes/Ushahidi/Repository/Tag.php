@@ -66,7 +66,25 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 	// CreateRepository
 	public function create(Entity $entity)
 	{
-		return parent::create($entity->setState(['created' => time()]));
+		$record = $entity->asArray();
+
+		$record['created'] = time();
+		$record['role'] = json_encode($record['role']);
+
+		return $this->executeInsert($this->removeNullValues($record));
+	}
+
+	// UpdateRepository
+	public function update(Entity $entity)
+	{
+		$update = $entity->getChanged();
+
+		if (isset($update['role']))
+		{
+			$update['role'] = json_encode($update['role']);
+		}
+
+		return $this->executeUpdate(['id' => $entity->id], $update);
 	}
 
 	// UpdatePostTagRepository
