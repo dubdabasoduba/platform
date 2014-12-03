@@ -47,6 +47,7 @@ class Post extends StaticEntity
 		return [
 			'id'              => 'int',
 			'parent_id'       => 'int',
+			'form'            => false,
 			'form_id'         => 'int',
 			'user_id'         => 'int',
 			'type'            => 'string',

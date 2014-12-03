@@ -129,6 +129,9 @@ trait DataTransformer
 			} elseif (is_array($val) && is_array($definition[$key])) {
 				// Arrays can be recursively transformed.
 				$data[$key] = $this->transform($data[$key], $definition[$key]);
+			} elseif ($definition[$key] === false) {
+				// Definition requires the value to be removed.
+				unset($data[$key]);
 			} elseif (null !== $val) {
 				if ($func = $this->getCustomTransformer($definition[$key])) {
 					// Use a custom transformer for this type.
