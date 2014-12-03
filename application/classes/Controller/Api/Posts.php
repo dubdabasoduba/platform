@@ -9,7 +9,7 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-use Ushahidi\Api\Endpoint;
+use Ushahidi\Core\Usecase;
 
 class Controller_Api_Posts extends Ushahidi_Api {
 
@@ -107,34 +107,15 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 */
 	public function action_post_index_collection()
 	{
-		$params = [
+		$extra_params = [
 			'type'      => $this->_type,
 			'parent_id' => $this->_parent_id,
 		];
 
-		$usecase = service('factory.usecase')
-			->get('posts', 'create')
-			->setPayload($params + $this->_request_payload);
+		$usecase = service('factory.usecase')->get('posts', 'create')
+			->setPayload($extra_params + $this->_request_payload);
 
-		try
-		{
-			$this->_response_payload = $usecase->interact();
-		}
-		catch (Ushahidi\Core\Exception\NotFoundException $e)
-		{
-			throw new HTTP_Exception_404($e->getMessage());
-		}
-		catch (Ushahidi\Core\Exception\ValidatorException $e)
-		{
-			// Also handles ParserException
-			throw new HTTP_Exception_400('Validation Error: \':errors\'', array(
-				':errors' => implode(', ', Arr::flatten($e->getErrors())),
-			));
-		}
-		catch (Ushahidi\Core\Exception\AuthorizerException $e)
-		{
-			throw new HTTP_Exception_403($e->getMessage());
-		}
+		$this->_restful($usecase);
 	}
 
 	/**
@@ -151,8 +132,7 @@ class Controller_Api_Posts extends Ushahidi_Api {
 			'parent' => $this->_parent_id,
 		];
 
-		$usecase = service('factory.usecase')
-			->get('posts', 'search')
+		$usecase = service('factory.usecase')->get('posts', 'search')
 			->setFilters($extra_params + $this->request->query());
 
 		$this->_restful($usecase);
@@ -182,30 +162,11 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 */
 	public function action_put_index()
 	{
-		$usecase = service('factory.usecase')
-			->get('posts', 'update')
+		$usecase = service('factory.usecase')->get('posts', 'update')
 			->setIdentifiers($this->request->param())
 			->setPayload($this->_request_payload);
 
-		try
-		{
-			$this->_response_payload = $usecase->interact();
-		}
-		catch (Ushahidi\Core\Exception\NotFoundException $e)
-		{
-			throw new HTTP_Exception_404($e->getMessage());
-		}
-		catch (Ushahidi\Core\Exception\ValidatorException $e)
-		{
-			// Also handles ParserException
-			throw new HTTP_Exception_400('Validation Error: \':errors\'', array(
-				':errors' => implode(', ', Arr::flatten($e->getErrors())),
-			));
-		}
-		catch (Ushahidi\Core\Exception\AuthorizerException $e)
-		{
-			throw new HTTP_Exception_403($e->getMessage());
-		}
+		$this->_restful($usecase);
 	}
 
 	/**
@@ -217,9 +178,9 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 */
 	public function action_delete_index()
 	{
-		$endpoint = service('factory.usecase')->get('posts', 'delete');
+		$usecase = service('factory.usecase')->get('posts', 'delete');
 
-		$this->_restful($endpoint, $this->request->param());
+		$this->_restful($usecase);
 	}
 
 	/**
