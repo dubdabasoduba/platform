@@ -69,15 +69,19 @@ class SearchUsecaseSpec extends ObjectBehavior
 		$results = [$result];
 		$repo->getSearchResults()->willReturn($results);
 
+		// ... and the total count
+		$total = 10;
+		$repo->getSearchTotal()->wilLReturn($total);
+
 		// ... then filters the results
 		$action = 'read';
 		$auth->isAllowed($result, $action)->willReturn(true);
 
 		// ... passes the search for paging
-		$format->setSearch($search)->shouldBeCalled();
+		$format->setSearch($search, $total)->shouldBeCalled();
 
 		// ... then formats the records
-		$formatted = [['id' => 5]];
+		$formatted = ['results' => [['id' => 5]], 'total' => $total];
 		$format->__invoke($results)->willReturn($formatted);
 
 		// ... and returns the results

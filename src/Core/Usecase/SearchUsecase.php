@@ -88,6 +88,9 @@ class SearchUsecase implements Usecase
 		// ... get the results of the search
 		$results = $this->repo->getSearchResults();
 
+		// ... get the total count for the search
+		$total = $this->repo->getSearchTotal();
+
 		// ... remove any entities that cannot be seen
 		$priv = 'read';
 		foreach ($results as $idx => $entity) {
@@ -97,7 +100,7 @@ class SearchUsecase implements Usecase
 		}
 
 		// ... pass the search information to the formatter, for paging
-		$this->formatter->setSearch($search);
+		$this->formatter->setSearch($search, $total);
 
 		// ... and return the formatted results.
 		return $this->formatter->__invoke($results);

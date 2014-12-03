@@ -39,12 +39,14 @@ abstract class CollectionFormatter implements Formatter
 	/**
 	 * Store paging parameters.
 	 *
-	 * @param  Array $paging
+	 * @param  SearchData $search
+	 * @param  Integer    $total
 	 * @return $this
 	 */
-	public function setSearch(SearchData $search)
+	public function setSearch(SearchData $search, $total = null)
 	{
 		$this->search = $search;
+		$this->total  = $total;
 		return $this;
 	}
 
