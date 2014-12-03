@@ -214,7 +214,7 @@ class UshahidiTestsRunCommand extends UshahidiTestsCommand
         $output->writeln("\n<info> - Running Behat tests - </info>\n");
         $behat_command = "{$this->dir}/bin/behat"
                        . " --config {$this->dir}/application/tests/behat.yml"
-                       . " --format progress"
+                       . " --profile ci"
                        . " --strict"
                        ;
         $tests_pass = $tests_pass && ($this->execEnv($behat_command, true) === 0);

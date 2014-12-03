@@ -19,3 +19,5 @@ default:
 ci:
   filters:
     tags:
+  formatter:
+    name: progress
