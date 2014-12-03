@@ -66,6 +66,18 @@ class RestContext extends BehatContext
 	}
 
 	/**
+	 * @Given /^that "([^"]*)" data source is enabled$/
+	 */
+	public function thatTheDataSourceIsEnabled($provider)
+	{
+		$enabled = \DataProvider::get_enabled_providers();
+
+		if (!in_array($provider, $enabled)) {
+			throw new \Exception(sprintf('Data provider %s is not enabled', $provider));
+		}
+	}
+
+	/**
 	 * @Given /^that I want to make a new "([^"]*)"$/
 	 */
 	public function thatIWantToMakeANew($objectType)

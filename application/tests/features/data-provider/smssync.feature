@@ -1,7 +1,8 @@
 Feature: Testing the SMSSync Data Provider
 
     Scenario: Submit a message to smssync controller
-        Given that I want to make a new "Message"
+        Given that "smssync" data source is enabled
+        And that I want to make a new "Message"
         And that the request "data" is:
             """
             secret=1234&message=Some+testing+message&from=123456789&sent_to=123
@@ -16,7 +17,8 @@ Feature: Testing the SMSSync Data Provider
         Then the guzzle status code should be 200
 
     Scenario: Submit a message to smssync controller with wrong key
-        Given that I want to make a new "Message"
+        Given that "smssync" data source is enabled
+        And that I want to make a new "Message"
         And that the request "data" is:
             """
             secret=wrong&message=Some+testing+message&from=123456789&sent_to=123
@@ -33,7 +35,8 @@ Feature: Testing the SMSSync Data Provider
         Then the guzzle status code should be 403
 
     Scenario: Submit a message to smssync controller with no message
-        Given that I want to make a new "Message"
+        Given that "smssync" data source is enabled
+        And that I want to make a new "Message"
         And that the request "data" is:
             """
             secret=1234&from=123456789&sent_to=123
@@ -48,8 +51,10 @@ Feature: Testing the SMSSync Data Provider
         And the "payload.success" property is false
         And the "payload.error" property equals "Missing message"
         Then the guzzle status code should be 400
+
     Scenario: Submit a message to smssync controller with no from value
-        Given that I want to make a new "Message"
+        Given that "smssync" data source is enabled
+        And that I want to make a new "Message"
         And that the request "data" is:
             """
             secret=1234&sent_to=123
