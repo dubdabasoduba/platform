@@ -37,10 +37,25 @@ trait DataTransformer
 	 */
 	protected static function transformJson($value)
 	{
-		if (!is_string($value)) {
-			return $value;
+		if (is_string($value)) {
+			$value = json_decode($value, true);
 		}
-		return json_decode($value, true);
+
+		if (static::optionJsonAlwaysArray()) {
+			$value = (array) $value;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Requires that all `json` type fields are returned as arrays.
+	 *
+	 * @return Boolean
+	 */
+	protected static function optionJsonAlwaysArray()
+	{
+		return true;
 	}
 
 	/**
