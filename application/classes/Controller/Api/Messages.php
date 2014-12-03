@@ -78,13 +78,11 @@ class Controller_Api_Messages extends Ushahidi_Rest {
 
 		if ($response->status() == 200)
 		{
-			// @todo this is ugly and horrible
-			$parser = service('factory.parser')->get('messages', 'update');
-			$data   = $parser([
+			// @todo still not pretty, but is it worth passing through usecase?
+			$message->setState([
 				'post_id' => $this->_response_payload['id'],
-				'status'  => $message->status, // required, fixme
 			]);
-			$repo->update($message->id, $data);
+			$repo->update($message);
 		}
 	}
 

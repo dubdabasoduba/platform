@@ -387,14 +387,13 @@ abstract class Ushahidi_Rest extends Controller {
 	}
 
 	/**
-	 * Prepare response headers and body, formatted based on user request.
+	 * Execute the usecase that the controller prepared.
 	 * @throws HTTP_Exception_400
 	 * @throws HTTP_Exception_403
 	 * @throws HTTP_Exception_404
-	 * @throws HTTP_Exception_500
 	 * @return void
 	 */
-	protected function _prepare_response()
+	protected function _execute_usecase()
 	{
 		try
 		{
@@ -414,6 +413,21 @@ abstract class Ushahidi_Rest extends Controller {
 			throw new HTTP_Exception_400('Validation Error: \':errors\'', array(
 				':errors' => implode(', ', Arr::flatten($e->getErrors())),
 			));
+		}
+	}
+
+	/**
+	 * Prepare response headers and body, formatted based on user request.
+	 * @throws HTTP_Exception_400
+	 * @throws HTTP_Exception_500
+	 * @return void
+	 */
+	protected function _prepare_response()
+	{
+		if ($this->_usecase)
+		{
+			// Run the usecase
+			$this->_execute_usecase();
 		}
 
 		// Add CORS headers to the response
