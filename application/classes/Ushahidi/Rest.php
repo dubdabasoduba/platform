@@ -140,7 +140,7 @@ abstract class Ushahidi_Rest extends Controller {
 	public function action_post_index_collection()
 	{
 		$this->_usecase = service('factory.usecase')
-			->get($this->_scope(), 'create')
+			->get($this->_resource(), 'create')
 			->setPayload($this->_request_payload);
 	}
 
@@ -154,7 +154,7 @@ abstract class Ushahidi_Rest extends Controller {
 	public function action_get_index_collection()
 	{
 		$this->_usecase = service('factory.usecase')
-			->get($this->_scope(), 'search')
+			->get($this->_resource(), 'search')
 			->setFilters($this->request->query());
 	}
 
@@ -168,7 +168,7 @@ abstract class Ushahidi_Rest extends Controller {
 	public function action_get_index()
 	{
 		$this->_usecase = service('factory.usecase')
-			->get($this->_scope(), 'read')
+			->get($this->_resource(), 'read')
 			->setIdentifiers($this->request->param());
 	}
 
@@ -182,7 +182,7 @@ abstract class Ushahidi_Rest extends Controller {
 	public function action_put_index()
 	{
 		$this->_usecase = service('factory.usecase')
-			->get($this->_scope(), 'update')
+			->get($this->_resource(), 'update')
 			->setIdentifiers($this->request->param())
 			->setPayload($this->_request_payload);
 	}
@@ -197,7 +197,7 @@ abstract class Ushahidi_Rest extends Controller {
 	public function action_delete_index()
 	{
 		$this->_usecase = service('factory.usecase')
-			->get($this->_scope(), 'delete')
+			->get($this->_resource(), 'delete')
 			->setIdentifiers($this->request->param());
 	}
 
@@ -206,6 +206,15 @@ abstract class Ushahidi_Rest extends Controller {
 	 * @return string
 	 */
 	abstract protected function _scope();
+
+	/**
+	 * Get the resource name for this endpoint. Defaults to the scope name.
+	 * @return string
+	 */
+	protected function _resource()
+	{
+		return $this->_scope();
+	}
 
 	/**
 	 * Get the request access method
