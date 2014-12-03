@@ -9,9 +9,9 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-use Ushahidi\Core\Data;
-use Ushahidi\Core\SearchData;
+use Ushahidi\Core\Entity;
 use Ushahidi\Core\Entity\Layer;
+use Ushahidi\Core\SearchData;
 
 class Ushahidi_Repository_Layer extends Ushahidi_Repository
 {
@@ -24,10 +24,13 @@ class Ushahidi_Repository_Layer extends Ushahidi_Repository
 	// Ushahidi_Repository
 	public function getEntity(Array $data = null)
 	{
-		// Decode options into an array
-		$data['options'] = json_decode($data['options'], TRUE);
-
 		return new Layer($data);
+	}
+
+	// SearchRepository
+	public function getSearchFields()
+	{
+		return ['active', 'type'];
 	}
 
 	// Ushahidi_Repository
@@ -45,20 +48,20 @@ class Ushahidi_Repository_Layer extends Ushahidi_Repository
 	}
 
 	// CreateRepository
-	public function create(Data $input)
+	public function create(Entity $entity)
 	{
-		$record = $input->asArray();
+		$record = $entity->asArray();
 
 		$record['created'] = time();
 		$record['options'] = json_encode($record['options']);
 
-		return $this->executeInsert($record);
+		return $this->executeInsert($this->removeNullValues($record));
 	}
 
 	// UpdateRepository
-	public function update($id, Data $input)
+	public function update(Entity $entity)
 	{
-		$update = $input->asArray();
+		$update = $entity->getChanged();
 
 		$update['updated'] = time();
 		if (isset($update['options']))
@@ -66,6 +69,6 @@ class Ushahidi_Repository_Layer extends Ushahidi_Repository
 			$update['options'] = json_encode($update['options']);
 		}
 
-		return $this->executeUpdate(compact('id'), $update);
+		return $this->executeUpdate(['id' => $entity->id], $update);
 	}
 }
