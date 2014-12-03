@@ -73,12 +73,13 @@ abstract class Ushahidi_Core {
 
 		// Custom password authenticator
 		$di->setter['League\OAuth2\Server\Grant\Password']['setVerifyCredentialsCallback'] = function($username, $password) {
-			$usecase = service('usecase.user.login');
-			// todo: parse this? inject it?
-			$data    = new Ushahidi\Core\Usecase\User\LoginData(compact('username', 'password'));
+			$usecase = service('factory.usecase')->get('users', 'login')
+				->setIdentifiers(compact('username', 'password'));
+
 			try
 			{
-				return $usecase->interact($data);
+				$data = $usecase->interact();
+				return $data['id'];
 			}
 			catch (Exception $e)
 			{

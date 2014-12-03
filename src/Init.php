@@ -113,7 +113,7 @@ $di->params['Ushahidi\Factory\RepositoryFactory']['map'] = [
 	'posts'         => $di->lazyGet('repository.post'),
 	'tags'          => $di->lazyGet('repository.tag'),
 	'sets'          => $di->lazyGet('repository.set'),
-	'users'			=> $di->lazyGet('repository.user'),
+	'users'         => $di->lazyGet('repository.user'),
 ];
 
 // Formatters are used for to prepare the output of records. Actions that return
@@ -194,6 +194,13 @@ $di->params['Ushahidi\Factory\UsecaseFactory']['map']['posts'] = [
 	'update'  => $di->lazyNew('Ushahidi\Core\Usecase\Post\UpdatePost'),
 	'delete'  => $di->lazyNew('Ushahidi\Core\Usecase\Post\DeletePost'),
 ];
+
+// User login and registration are custom
+$di->params['Ushahidi\Factory\UsecaseFactory']['map']['users'] = [
+	'login'    => $di->lazyNew('Ushahidi\Core\Usecase\User\LoginUser'),
+	'register' => $di->lazyNew('Ushahidi\Core\Usecase\User\RegisterUser'),
+];
+$di->setter['Ushahidi\Core\Usecase\User\LoginUser']['setAuthenticator'] = $di->lazyGet('tool.authenticator.password');
 
 // Endpoints are used to cross the boundary between the core application and the
 // delivery layer. The endpoint factory is a meta-factory that composes each use
@@ -286,18 +293,4 @@ $di->set('authorizer.set', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthor
 $di->set('authorizer.post', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\PostAuthorizer'));
 $di->params['Ushahidi\Core\Tool\Authorizer\PostAuthorizer'] = [
 	'post_repo' => $di->lazyGet('repository.post'),
-	];
-
-// Use cases
-$di->set('usecase.user.register', $di->lazyNew('\Ushahidi\Core\Usecase\User\Register'));
-$di->params['\Ushahidi\Core\Usecase\User\Register'] = [
-	'repo' => $di->lazyGet('repository.user'),
-	'valid' => $di->lazyGet('validator.user.register'),
-	];
-
-$di->set('usecase.user.login', $di->lazyNew('\Ushahidi\Core\Usecase\User\Login'));
-$di->params['\Ushahidi\Core\Usecase\User\Login'] = [
-	'repo' => $di->lazyGet('repository.user'),
-	'valid' => $di->lazyGet('validator.user.login'),
-	'auth' => $di->lazyGet('tool.authenticator.password'),
 	];
