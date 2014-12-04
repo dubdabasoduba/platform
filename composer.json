@@ -61,7 +61,8 @@
         "wouter/a2": "dev-master",
         "wouter/acl": "dev-master",
         "twilio/sdk": "3.12.*",
-        "zeelot/kohana-media": "1.3.*@dev"
+        "zeelot/kohana-media": "1.3.*@dev",
+        "vlucas/phpdotenv": "~1.0@dev"
     },
     "require-dev": {
         "behat/behat": "~2.5.2",
