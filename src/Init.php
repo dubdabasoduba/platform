@@ -16,9 +16,6 @@
 // [composer]: http://getcomposer.org/
 require __DIR__ . '/../vendor/autoload.php';
 
-// Load dotenv
-Dotenv::load(APPPATH.'../');
-
 // The global [Dependency Injection][di] container lives inside of a global
 // `service()` function. This avoids the need to have a global variable, and
 // allows for easy access to loading services by using the `$what` parameter.

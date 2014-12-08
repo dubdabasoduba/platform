@@ -99,5 +99,8 @@ if ( ! defined('KOHANA_START_MEMORY'))
 // Ushahidi: load transitional code
 require APPPATH.'../src/Init'.EXT;
 
+// Load dotenv
+Dotenv::load(APPPATH.'../');
+
 // Bootstrap the application
 require APPPATH.'bootstrap'.EXT;
