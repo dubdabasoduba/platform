@@ -14,9 +14,4 @@ use Ushahidi\Core\Traits\FormatterAuthorizerMetadata;
 class Ushahidi_Formatter_Form_Attribute extends Ushahidi_Formatter_API
 {
     use FormatterAuthorizerMetadata;
-
-    protected function format_required($value)
-    {
-        return (bool) $value;
-    }
 }
