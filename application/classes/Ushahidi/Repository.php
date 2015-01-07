@@ -280,22 +280,6 @@ abstract class Ushahidi_Repository implements
 	}
 
 	/**
-	 * Converts an array of results into an array of entities,
-	 * indexed by the entity id.
-	 * @param  Array $results
-	 * @return Array
-	 */
-	protected function getCollection(Array $results)
-	{
-		$collection = [];
-		foreach ($results as $row) {
-			$entity = $this->getEntity($row);
-			$collection[$entity->id] = $entity;
-		}
-		return $collection;
-	}
-
-	/**
 	 * Check if an entity with the given id exists
 	 * @param  int $id
 	 * @return bool
