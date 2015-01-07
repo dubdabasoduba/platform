@@ -30,13 +30,13 @@ class Ushahidi_Formatter_API implements Formatter
 			'url' => URL::site(Ushahidi_Api::url($entity->getResource(), $entity->id), Request::current()),
 			];
 
-		if (array_key_exists('parent_id', $fields))
+		if (isset($fields['parent_id']))
 		{
 			$data['parent'] = $this->get_relation($entity->getResource(), $entity->parent_id);
 			unset($fields['parent_id']);
 		}
 
-		if (array_key_exists('user_id', $fields))
+		if (isset($fields['user_id']))
 		{
 			$data['user'] = $this->get_relation('users', $entity->user_id);
 			unset($fields['user_id']);
