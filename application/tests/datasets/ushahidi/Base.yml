@@ -186,6 +186,17 @@ form_attributes:
     options: ""
     cardinality: 1
     form_group_id: 1
+  -
+    id: 13
+    label: "Third Point"
+    key: "third_point"
+    type: "point"
+    input: "location"
+    required: 0
+    priority: 8
+    options: ""
+    cardinality: 1
+    form_group_id: 2
 posts:
   -
     id: 1
