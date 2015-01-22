@@ -39,6 +39,7 @@ tar -cf $TARFILE \
     --exclude 'composer.*' \
     --exclude 'phpspec.yml.dist' \
     --exclude 'behat.yml.dist' \
+    --exclude 'phpunit.xml.dist' \
     --exclude '.arc*' \
     --exclude '.git' \
     --exclude '.git*' \
