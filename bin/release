@@ -33,9 +33,11 @@ tar -cf $TARFILE \
     --exclude 'build' \
     --exclude 'application/tests' \
     --exclude 'spec' \
+    --exclude '.phpspec' \
     --exclude '.travis.yml' \
     --exclude '.librarian' \
     --exclude '.vagrant' \
+    --exclude '.tmp' \
     --exclude 'composer.*' \
     --exclude 'phpspec.yml.dist' \
     --exclude 'behat.yml.dist' \
