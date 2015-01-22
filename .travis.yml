@@ -16,15 +16,18 @@ script:
 - "./bin/tests run --no-install"
 before_deploy:
 - bin/release build-$TRAVIS_COMMIT
+- cd build
+- mkdir -p V3/travis
+- mv *.tar.gz V3/travis/
 deploy:
-  provider: s3
-  access_key_id: AKIAIRCFCCGK6DG5STUA
-  secret_access_key:
-    secure: LZJrmQZzwxP3XTgiBULdtEnD86K+LAm8HgApnHMzEvrgZulm8UWwq5j+S5tIP1zZG5hUe+7AazcXT94/iPL4bI3cVbcrWyFOsLYunlzVXmKRHB+QWc66RfcaARi1anqzNB2fZti7FJ/TOIybvrInByvHeb1WKyvso9tsiqSqCO8=
-  bucket: ushahidi-downloads
-  local-dir: build
+  provider: cloudfiles
+  username: ushahidipro
+  api_key:
+    secure: OtFvz6JwfyO3E9Cvg0XNU0+/3PUXYTRxnK5brKxFYA5usAJeTqZaDpGkvtH9L+x/ybXMHX4MQVhyGnqUs+SorLeNA8us7xNw52HeOhGrbTCuzxpQb1m1IW33c7Sij6PSyuNLUFfbvozlOrehL6aij39jDkuWTOKGalZCNBgJpCA=
+  region: DFW
+  container: ushahidi-downloads
   upload-dir: V3/travis
-  acl: public_read
   on:
     repo: ushahidi/platform
     all_branches: true
+
