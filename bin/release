@@ -1,0 +1,56 @@
+#!/usr/bin/env bash -e
+
+# if someone invokes this with bash
+set -e
+
+# build release tarball
+usage() {
+    echo usage: $0 VERSION
+    exit 2
+}
+
+test $# -eq 1 || usage
+VERSION=$1
+
+echo "Clean out extra files"
+git clean -fdx
+
+echo "Running bin/update --production"
+bin/update --production
+
+# Tar it up.
+echo "Building tarball"
+mkdir -p build
+TARFILE="build/Ushahidi-Platform-v${VERSION}.tar"
+
+tar -cf $TARFILE \
+    --exclude 'application/cache' \
+    --exclude 'application/logs' \
+    --exclude 'application/media/uploads' \
+    --exclude 'application/config/environments' \
+    --exclude 'application/routes' \
+    --exclude '.htaccess' \
+    --exclude 'build' \
+    --exclude 'application/tests' \
+    --exclude 'spec' \
+    --exclude '.travis.yml' \
+    --exclude '.librarian' \
+    --exclude '.vagrant' \
+    --exclude 'composer.*' \
+    --exclude 'phpspec.yml.dist' \
+    --exclude 'behat.yml.dist' \
+    --exclude '.arc*' \
+    --exclude '.git' \
+    --exclude '.git*' \
+    ./
+
+# Add extra file that would have been excluded otherwise
+tar -rf $TARFILE \
+    'application/cache/.gitignore' \
+    'application/logs/.gitignore' \
+    'application/media/uploads/.gitignore' \
+    'application/config/environments/development/.gitignore' \
+    'application/routes/default.php'
+
+gzip -f $TARFILE
+echo "Release tarball: `pwd`/${TARFILE}.gz"
