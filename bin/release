@@ -16,7 +16,7 @@ echo "Clean out extra files"
 git clean -fdx
 
 echo "Running bin/update --production"
-bin/update --production
+bin/update --production --no-migrate
 
 # Tar it up.
 echo "Building tarball"
