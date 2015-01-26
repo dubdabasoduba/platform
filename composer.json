@@ -92,5 +92,10 @@
         "psr-4": {
             "Ushahidi\\": "src/"
         }
+    },
+    "scripts": {
+        "post-install-cmd" : [
+            "bin/phinx migrate -c application/phinx.php"
+        ]
     }
 }
