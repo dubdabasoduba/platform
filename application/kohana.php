@@ -100,7 +100,9 @@ if ( ! defined('KOHANA_START_MEMORY'))
 require APPPATH.'../src/Init'.EXT;
 
 // Load dotenv
-Dotenv::load(APPPATH.'../');
+if (is_file(APPPATH.'../.env')) {
+	Dotenv::load(APPPATH.'../');
+}
 
 // Bootstrap the application
 require APPPATH.'bootstrap'.EXT;
