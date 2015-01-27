@@ -11,6 +11,14 @@ services:
 install:
 - composer install --no-interaction
 before_script:
-- ./bin/tests install
+- "./bin/tests install"
 script:
-- ./bin/tests run --no-install
+- "./bin/tests run --no-install"
+deploy:
+  provider: heroku
+  api_key:
+    secure: fkC2bEELMXojW0FFkWAlSayqR7GaB3bab/AwB+CW9vKyTd7qNs099mthWpV4iAaJXHQ64IYHvvfQ0IZ7VV/+JX3zsfzTKpcF70ArmQnERIW1cppV4ZtfxcRLHu70FP0Ab0Crenh/6wlj7NtmOfYVgi6L7lFQvNADqfPn2cYuXyk=
+  app: platform-api-master
+  on:
+    repo: ushahidi/platform
+    branch: heroku-deploy
